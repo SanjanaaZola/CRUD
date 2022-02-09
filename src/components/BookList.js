@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button } from 'react-bootstrap'
+import BookDataService from '../services/book.services'
 
 const BookList = () => {
   const [books, setBooks] = useState([])
 
-  const getBooks = () => {}
+  useEffect(() => {
+    getBooks()
+  }, [])
+
+  const getBooks = async () => {
+    const data = await BookDataService.getAllBooks()
+  }
+
   return (
     <>
       <div className='mb-2'>
