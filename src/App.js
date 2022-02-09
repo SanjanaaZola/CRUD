@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import { Container, Navbar, Row, Col } from 'react-bootstrap'
+import AddBook from './components/AddBook'
+import BookList from './components/BookList'
+import './App.css'
 
-function App() {
+const App = () => {
+  const [bookId, setBookId] = useState('')
+
+  const getBookHandler = (id) => {}
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Navbar bg='dark' variant='dark' classname='header'>
+        <Container>
+          <Navbar.Brand href='#home'>Library - Firebase CRUD</Navbar.Brand>
+        </Container>
+      </Navbar>
+
+      <Container style={{ width: '400px' }}>
+        <Row>
+          <Col>
+            <AddBook id={bookId} setBookId={setBookId} />
+          </Col>
+        </Row>
+      </Container>
+      <Container>
+        <Row>
+          <Col>
+            <BookList getBookId={getBookHandler} />
+          </Col>
+        </Row>
+      </Container>
+    </>
+  )
 }
 
-export default App;
+export default App
