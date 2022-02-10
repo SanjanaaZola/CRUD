@@ -1,5 +1,7 @@
 .header .container {
+  display: flex;
   justify-content: center;
+  align-items: center;
 }
 .input-group-text {
   background-color: #212529;

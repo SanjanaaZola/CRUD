@@ -7,7 +7,10 @@ import './App.css'
 const App = () => {
   const [bookId, setBookId] = useState('')
 
-  const getBookHandler = (id) => {}
+  const getBookHandler = (id) => {
+    console.log('The ID of the document to be edited:', id)
+    setBookId(id)
+  }
   return (
     <>
       <Navbar bg='dark' variant='dark' classname='header'>

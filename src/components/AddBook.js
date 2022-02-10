@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Alert, InputGroup, Button, ButtonGroup } from 'react-bootstrap'
 import BookDataService from '../services/book.services'
 
-const AddBook = () => {
+const AddBook = ({ id, setBookId }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [status, setStatus] = useState('Available')
@@ -22,8 +22,14 @@ const AddBook = () => {
     console.log(newBook)
 
     try {
-      await BookDataService.addBooks(newBook)
-      setMessage({ error: false, msg: 'New Book added successfully.' })
+      if (id !== undefined && id !== '') {
+        await BookDataService.updateBook(id, newBook)
+        setBookId('')
+        setMessage({ error: false, msg: 'Updated Successfully.' })
+      } else {
+        await BookDataService.addBooks(newBook)
+        setMessage({ error: false, msg: 'New Book added successfully.' })
+      }
     } catch (err) {
       setMessage({ error: true, msg: err.message })
     }
@@ -31,6 +37,25 @@ const AddBook = () => {
     setTitle('')
     setAuthor('')
   }
+  const editHandler = async () => {
+    setMessage('')
+    try {
+      const docSnap = await BookDataService.getBook(id)
+      setTitle(docSnap.data().title)
+      setAuthor(docSnap.data().author)
+      setStatus(docSnap.data().status)
+    } catch (err) {
+      setMessage({ error: true, msg: err.message })
+    }
+  }
+
+  useEffect(() => {
+    console.log('the id here is:', id)
+    if (id !== undefined && id !== '') {
+      editHandler()
+    }
+  }, [id])
+
   return (
     <div className='p-4 box'>
       {message?.msg && (
@@ -46,26 +71,30 @@ const AddBook = () => {
         <Form.Group classname='mb-3' controlId='formBookTitle'>
           <InputGroup>
             <InputGroup.Text id='formBookTitle'>B</InputGroup.Text>
+            <Form.Control
+              type='text'
+              placeholder='Book Title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </InputGroup>
-          <Form.Control
-            type='text'
-            placeholder='Book Title'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
         </Form.Group>
         <Form.Group classname='mb-3' controlId='formBookAuthor'>
           <InputGroup>
             <InputGroup.Text id='formBookAuthor'>A</InputGroup.Text>
+            <Form.Control
+              type='text'
+              placeholder='Book Author'
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
           </InputGroup>
-          <Form.Control
-            type='text'
-            placeholder='Book Author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
         </Form.Group>
-        <ButtonGroup className='mb-3'>
+        <ButtonGroup
+          aria-label='basic example'
+          className='mb-3 mt-3 '
+          style={{ width: '100%' }}
+        >
           <Button
             disabled={flag}
             variant='success'
@@ -88,7 +117,7 @@ const AddBook = () => {
           </Button>
         </ButtonGroup>
         <div classname='d-grid gap-2'>
-          <Button variant='primary' type='submit'>
+          <Button variant='primary' type='submit' style={{ width: '100%' }}>
             Add/Update
           </Button>
         </div>

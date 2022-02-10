@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Table, Button } from 'react-bootstrap'
 import BookDataService from '../services/book.services'
 
-const BookList = () => {
+const BookList = ({ getBookId }) => {
   const [books, setBooks] = useState([])
 
   useEffect(() => {
@@ -11,16 +11,28 @@ const BookList = () => {
 
   const getBooks = async () => {
     const data = await BookDataService.getAllBooks()
+    console.log(data.docs)
+    setBooks(
+      data.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id }
+      })
+    )
   }
 
+  const deleteHandler = async (id) => {
+    await BookDataService.deleteBook(id)
+    getBooks()
+  }
   return (
     <>
+      {/* <pre>{JSON.stringify(books, undefined, 2)}</pre> */}
       <div className='mb-2'>
         <Button variant='dark edit' onClick={getBooks}>
           Refresh List
         </Button>
       </div>
-      <Table striped bordered hover>
+
+      <Table striped bordered hover size='sm'>
         <thead>
           <tr>
             <th>#</th>
@@ -31,20 +43,32 @@ const BookList = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>ReactJS</td>
-            <td>Zola</td>
-            <td>Available</td>
-            <td>
-              <Button variant='secondary' classname='edit' onClick={{}}>
-                Edit
-              </Button>
-              <Button variant='danger' classname='delete' onClick={{}}>
-                Delete
-              </Button>
-            </td>
-          </tr>
+          {books.map((doc, index) => {
+            return (
+              <tr key={doc.id}>
+                <td>{index + 1}</td>
+                <td>{doc.title}</td>
+                <td>{doc.author}</td>
+                <td>{doc.status}</td>
+                <td>
+                  <Button
+                    variant='secondary'
+                    classname='edit'
+                    onClick={(e) => getBookId(doc.id)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant='danger'
+                    classname='delete'
+                    onClick={(e) => deleteHandler(doc.id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </Table>
     </>
