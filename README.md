@@ -1,5 +1,7 @@
 # Library Management System
 
+Using Reactjs for front-end and Firestore in Firebase for storing Data.
+
 ## Getting Started
 
 Clone down this repository. You will need `node.js` and `git` installed globally on your machine.
